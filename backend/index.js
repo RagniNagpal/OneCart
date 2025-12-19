@@ -1,12 +1,13 @@
 import express from 'express'
+import dotenv from 'dotenv'
+import connectDb from './config/db.js';
 
-let port=8000;
+dotenv.config();
+let port=process.env.PORT || 3000;
+
 let app=express();
 
-app.get("/",(req,res)=>{
-  res.send("hello from server");
-})
-
 app.listen(port,()=>{
-  console.log("hello from server")
+  console.log("Hello from server")
+  connectDb()
 })
