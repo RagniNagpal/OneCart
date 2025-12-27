@@ -7,6 +7,9 @@ import { IoEye } from "react-icons/io5";
 import { useContext } from 'react';
 import { AuthDataContext } from '../context/authContext';
 import axios from 'axios'
+import { auth, provider } from '../../utils/Firebase'; 
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
 
 function Registration() {
   let [show,setShow] = useState(false);
@@ -30,10 +33,25 @@ function Registration() {
     console.log(result.data);
 
   } catch (error) {
-    console.log(error);
-  }
+  console.log(error.response?.data?.message);
+  alert(error.response?.data?.message || "Something went wrong");
+}
+
 };
 
+const googleSignup = async() =>{
+
+  try{
+    const response = await signInWithPopup(auth,provider)
+    let user=response.user
+    let name=user.displayName
+    let email=user.email
+    console.log(response)
+  } catch(error){
+    console.error(error);
+      alert(error.message);
+  }
+}
 
   return (
     <div className='w-[100vw] h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] text-[white] flex flex-col items-center justify-start'>
@@ -48,7 +66,7 @@ function Registration() {
       <div className='max-w-[600px] w-[90%] h-[500px] bg-[#00000025] border-[1px] border-[#96969635] backdrop-blur-2xl rounded-lg shadow-lg flex items-center justify-center'>
 
         <form action="" onSubmit={handleSignup} className='w-[90%] h-[90%] flex flex-col items-center justify-start gap-[20px]' >
-          <div className='w-[98%] h-[50px] bg-[#42656cae] rounded-lg flex items-center justify-center gap-[18px] py-[20px] cursor-pointer'>
+          <div className='w-[98%] h-[50px] bg-[#42656cae] rounded-lg flex items-center justify-center gap-[18px] py-[20px] cursor-pointer' onClick={googleSignup} >
             <img src={google} alt="" className='w-[20px]'/>Registration with Google
           </div>
           <div className='w-[100%] h-[20%] flex items-center gap-[10px] '>
@@ -58,7 +76,7 @@ function Registration() {
           </div>
           <div className='w-[90%] h-[400px] flex flex-col items-center justify-center gap-[15px] relative'>
             <input type="text" className='w-[100%] h-[50px] border-[2px] border-[#96969635] backdrop-blur-sm rounded-lg shadow-lg bg-transparent placeholder-[#ffffffc7] px-[20px] font-semibold ' placeholder='UserName' required onChange={(e) => setName(e.target.value)} value={name} />
-            <input type="text" className='w-[100%] h-[50px] border-[2px] border-[#96969635] backdrop-blur-sm rounded-lg shadow-lg bg-transparent placeholder-[#ffffffc7] px-[20px] font-semibold ' placeholder='Email' required onChange={(e) => setEmail(e.target.value)} value={email}/>
+            <input type="email" className='w-[100%] h-[50px] border-[2px] border-[#96969635] backdrop-blur-sm rounded-lg shadow-lg bg-transparent placeholder-[#ffffffc7] px-[20px] font-semibold ' placeholder='Email' required onChange={(e) => setEmail(e.target.value)} value={email}/>
             <input type={show ? "text" : "password"} className='w-[100%] h-[50px] border-[2px] border-[#96969635] backdrop-blur-sm rounded-lg shadow-lg bg-transparent placeholder-[#ffffffc7] px-[20px] font-semibold ' placeholder='Password' required onChange={(e) => setPassword(e.target.value)} value={password}/>
             {show ? (
                 <IoEye
